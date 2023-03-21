@@ -1,36 +1,30 @@
-name: "Build and push to ECR"
+name: Build and Push
+
 on:
   push:
     branches:
-    - main
-  pull_request:
-jobs:
-  BuildAndPushImageToECR:
-    name: "Build and Push to ECR"
-    runs-on: ubuntu-latest
+      - main
 
+env:
+  ECR_PUBLIC_REPOSITORY: public.ecr.aws/r7x0c3b9/hmid
+  AWS_REGION: us-east-1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: AKIAUU4XRIEBCX6XHV54
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 
-
-      - name: Login to Amazon ECR
-        id: login-ecr
+      - name: Login to ECR Public
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR 🏷
-        id: build-image
-        env:
-          ECR_REGISTRY: r7x0c3b9
-          ECR_REPOSITORY: hmid
-          IMAGE_TAG: v1
+      - name: Build and tag Docker image
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker build -t $ECR_PUBLIC_REPOSITORY:$GITHUB_SHA .
+          docker tag $ECR_PUBLIC_REPOSITORY:$GITHUB_SHA $ECR_PUBLIC_REPOSITORY:latest
+
+      - name: Push Docker image to ECR Public
+        run: |
+          docker push $ECR_PUBLIC_REPOSITORY:$GITHUB_SHA
+          docker push $ECR_PUBLIC_REPOSITORY:latest
