@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   BuildAndPushImageToECR:
-    name: "Build and Push toECR"
+    name: "Build and Push to ECR"
     runs-on: ubuntu-latest
 
     steps:
