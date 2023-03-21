@@ -1,4 +1,4 @@
-name: Build and Push
+name: Build and push to ECR
 
 on:
   push:
@@ -6,25 +6,25 @@ on:
       - main
 
 env:
-  ECR_PUBLIC_REPOSITORY: public.ecr.aws/r7x0c3b9/hmid
-  AWS_REGION: us-east-1
+  ECR_REGISTRY: ineejiHan.dkr.ecr.us-east-1.amazonaws.com
+  IMAGE_NAME: my-image
+  TAG: v1
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Login to ECR Public
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build and tag Docker image
-        run: |
-          docker build -t $ECR_PUBLIC_REPOSITORY:$GITHUB_SHA .
-          docker tag $ECR_PUBLIC_REPOSITORY:$GITHUB_SHA $ECR_PUBLIC_REPOSITORY:latest
-
-      - name: Push Docker image to ECR Public
-        run: |
-          docker push $ECR_PUBLIC_REPOSITORY:$GITHUB_SHA
-          docker push $ECR_PUBLIC_REPOSITORY:latest
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: AKIAUU4XRIEBCX6XHV54
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    - name: Build and tag Docker image
+      run: |
+        docker build -t $ECR_REGISTRY/$IMAGE_NAME:$TAG .
+    - name: Push Docker image to ECR
+      run: |
+        docker push $ECR_REGISTRY/$IMAGE_NAME:$TAG
