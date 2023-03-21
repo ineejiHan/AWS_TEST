@@ -2,6 +2,6 @@ FROM python:3.10.10
 WORKDIR /code
 RUN python -m venv venv
 COPY ./requirements.txt /code/requirements.txt
-RUN . /code/venv/Scripts/activate && pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN . /code/venv/bin/activate && pip install --no-cache-dir --upgrade -r /code/requirements.txt
 COPY ./app /code/app
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "9871"]
