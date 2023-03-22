@@ -1,4 +1,4 @@
-name: "Build and push to EC R"
+name: "Build and push to ECR"
 on:
   push:
     branches:
