@@ -53,7 +53,7 @@ async def create_tag(data :List[TageItem] ):
 
 # 태그 수정하기
 @tag.put(path="/updateTag",description= "태그 수정",tags=["TAG"])
-async def update_tag(id: str, name: str, unit: str, desc:str):
+async def update_tag(id: int, name: str, unit: str, desc:str):
     conn = await aiomysql.connect(host='220.94.157.27', port=53307,
                                       user='ineeji', password='ineeji1234',
                                       db='ineeji', autocommit=False)
@@ -68,7 +68,7 @@ async def update_tag(id: str, name: str, unit: str, desc:str):
 
 #태그 삭제하기
 @tag.delete(path="/deleteTag/{id}",description="태그 삭제",tags=["TAG"])
-async def delete_tag(id: str):
+async def delete_tag(id: int):
     conn = await aiomysql.connect(host='220.94.157.27', port=53307,
                                       user='ineeji', password='ineeji1234',
                                       db='ineeji', autocommit=True)
