@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class TageItem(BaseModel):
     name: str
-    unit: str
+    unit: Optional[str] = None
     description: Optional[str] = None
 
 class EquipItem(BaseModel):
