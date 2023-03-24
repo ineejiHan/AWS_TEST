@@ -3,7 +3,7 @@ from fastapi import APIRouter, UploadFile
 from app.schemas import TageItem
 from typing import List
 from app.models.tag import Tag
-
+import csv
 tag = APIRouter()
 
 #db = pymysql.connect(host='localhost', port=3306, user='root', passwd='ineeji1234', db='ineeji', charset='utf8')
@@ -48,7 +48,7 @@ async def create_tag(data :List[TageItem] ):
         query = "INSERT INTO tb_tag (name, unit, description) VALUES ( %s, %s, %s)"
         await cursor.executemany(query, tags)
     await conn.commit()
-    conn().close()
+    #conn().close()
     return {"message": "Item has been created successfully."}
 
 # 태그 수정하기
@@ -103,5 +103,5 @@ async def in_use_tag(data :List[TageItem] ):
 
 # @tag.post(path="/uploadfile",description="CSV 파일 업로드",tags=["TAG"])
 # async def create_upload_file(file: UploadFile):
-#     print(await file.read())
+#     print(  file.write)
 #     return {"filename": file.filename}
