@@ -36,20 +36,25 @@ async def create_tag(data :List[TageItem] ):
     tags = []
     for item in data:
         tag = (item.name,item.unit,item.description)
-        tags.append(tag)  
-        print(tags)
-    conn = await aiomysql.connect(host='220.94.157.27', port=53307,
+        tags.append(tag)
+    createList = await in_use_tag(data)
+    if len(createList) > 0 :
+        return createList
+    else:
+        conn = await aiomysql.connect(host='220.94.157.27', port=53307,
                                       user='ineeji', password='ineeji1234',
                                       db='ineeji', autocommit=False)
-    async with conn.cursor() as cursor:
+        async with conn.cursor() as cursor:
         # query = "INSERT INTO tb_tag (id, name, unit, description) VALUES (%s, %s, %s, %s)"
         # values = (id, name, unit, description)
         # await cursor.executemay(query, values)
-        query = "INSERT INTO tb_tag (name, unit, description) VALUES ( %s, %s, %s)"
-        await cursor.executemany(query, tags)
-    await conn.commit()
-    #conn().close()
-    return {"message": "Item has been created successfully."}
+            query = "INSERT INTO tb_tag (name, unit, description) VALUES ( %s, %s, %s)"
+            await cursor.executemany(query, tags)
+            await conn.commit()
+            #conn().close()
+            return {"message": "Item has been created successfully."}
+  
+
 
 # 태그 수정하기
 @tag.put(path="/updateTag",description= "태그 수정",tags=["TAG"])
